@@ -14,12 +14,15 @@ def parse_mix(carbon, timestamp):
     carbon_rounded = round(carbon, 3)
     day = timestamp[0:10]
     time = timestamp[11:16]
-    text_string = "%slb/kwh at %s on %s" % (carbon_rounded, time, day)
+    text_string = "%s lbs/kwh at %s on %s" % (carbon_rounded, time, day)
     return text_string
 
 def parse_text(text):
     # Parses text into a zip code or rejects.
-    zip = 94704
+    if len(text) == 5 and text.isdigit():
+        zip = text
+    else:
+        zip = False
     return zip
 
 
@@ -71,4 +74,4 @@ def text_data(mix_string):
         text_text = "Sorry, no data found"
     return text_text
 
-print(text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text(""))))))
+print(text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text("94720"))))))

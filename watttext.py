@@ -1,4 +1,5 @@
-# import twilio
+from flask import Flask, request, redirect
+import twilio.twiml
 import requests
 import json
 
@@ -6,16 +7,15 @@ from geopy.geocoders import Nominatim
 
 watttime_token = 'Token 062fcb6e4c2eac88241e0a727f2cf4fb8c1cca29'
 headers = {'Authorization': watttime_token}
-twilio_id = 'AC1773d28a4edb400cd3a97a854ded20e1'
-twilio_token = 'fb67c60d1088d5b503b0ef1e00ab526c'
 
 
 def parse_mix(carbon, timestamp):
     carbon_rounded = round(carbon, 3)
     day = timestamp[0:10]
     time = timestamp[11:16]
-    text_string = "%s lbs/kwh at %s on %s" % (carbon_rounded, time, day)
+    text_string = "%s lbs/kwh at %sUTC on %s" % (carbon_rounded, time, day)
     return text_string
+
 
 def parse_text(text):
     # Parses text into a zip code or rejects.
@@ -74,4 +74,25 @@ def text_data(mix_string):
         text_text = "Sorry, no data found"
     return text_text
 
-print(text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text("94720"))))))
+
+def do_it(text):
+    message = text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text(text)))))
+    return message
+
+
+app = Flask(__name__)
+
+
+@app.route("/", methods=['GET', 'POST'])
+def hello_monkey():
+    """Respond to incoming calls with a simple text message."""
+
+    body = request.values.get('Body')
+    text_message = do_it(body)
+    resp = twilio.twiml.Response()
+    resp.message(text_message)
+    return str(resp)
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', debug=False)

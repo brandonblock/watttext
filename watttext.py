@@ -11,11 +11,15 @@ twilio_token = 'fb67c60d1088d5b503b0ef1e00ab526c'
 
 
 def parse_mix(carbon, timestamp):
-    carbon = round(carbon, 3)
+    carbon_rounded = round(carbon, 3)
+    day = timestamp[0:10]
+    time = timestamp[11:16]
+    text_string = "%sppb/kwh as of %s on %s" % (carbon_rounded, time, day)
+    print(text_string)
 
 
-def receive_text(text):
-    # Receives and parses text into a zip code.
+def parse_text(text):
+    # Parses text into a zip code or rejects.
     zip = ""
     return zip
 
@@ -66,4 +70,4 @@ def text_sorry():
     pass
 
 
-print(get_mix_data("ISONE"))
+get_mix_data("ISONE")

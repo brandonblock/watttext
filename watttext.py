@@ -22,13 +22,15 @@ def zip_lookup(zip):
     location = geolocator.geocode(zip)
 
     lat = str(location.latitude)
-    long = str(location.longitude)
+    lon = str(location.longitude)
 
-    return [long, lat]
+    return [lon, lat]
 
 
 def loc_to_ba(coords):
-    url = 'https://api.watttime.org/api/v1/balancing_authorities/?loc={"type":"Point","coordinates":[%s,%s]}' % (coords[0], coords[1])
+    url = 'https://api.watttime.org/api/v1/balancing_authorities/?loc={' \
+          '"type":"Point","coordinates":[%s,%s]}' % (
+    coords[0], coords[1])
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     resultsjson = json.loads(r.text)
@@ -38,7 +40,14 @@ def loc_to_ba(coords):
 
 def get_mix_data(ba):
     # Takes the balancing authority and returns mix data.
-    url = ""
+    url = "https://api.watttime.org:443/api/v1/datapoints/?ba=%s" % ba
+    r = requests.get(url, headers=headers)
+    r.raise_for_status()
+    resultsjson = json.loads(r.text)
+    data_present = True
+    for i in range(len(resultsjson['results'])):
+        print "Bummer, dude"
+
     mix_data = {}
     return mix_data
 
@@ -52,4 +61,4 @@ def text_sorry():
     pass
 
 
-get_mix_data(loc_to_ba(zip_lookup("27514")))
+get_mix_data("ISONE")

@@ -30,7 +30,7 @@ def zip_lookup(zip):
 def loc_to_ba(coords):
     url = 'https://api.watttime.org/api/v1/balancing_authorities/?loc={' \
           '"type":"Point","coordinates":[%s,%s]}' % (
-    coords[0], coords[1])
+              coords[0], coords[1])
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     resultsjson = json.loads(r.text)
@@ -44,9 +44,10 @@ def get_mix_data(ba):
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     resultsjson = json.loads(r.text)
-    data_present = True
     for i in range(len(resultsjson['results'])):
-        print "Bummer, dude"
+        if resultsjson['results'][i]['carbon']:
+            print(resultsjson['results'][i]['carbon'])
+            print(resultsjson['results'][i]['timestamp'])
 
     mix_data = {}
     return mix_data

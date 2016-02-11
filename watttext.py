@@ -10,6 +10,10 @@ twilio_id = 'AC1773d28a4edb400cd3a97a854ded20e1'
 twilio_token = 'fb67c60d1088d5b503b0ef1e00ab526c'
 
 
+def parse_mix(carbon, timestamp):
+    carbon = round(carbon, 3)
+
+
 def receive_text(text):
     # Receives and parses text into a zip code.
     zip = ""
@@ -44,13 +48,13 @@ def get_mix_data(ba):
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     resultsjson = json.loads(r.text)
-    for i in range(len(resultsjson['results'])):
-        if resultsjson['results'][i]['carbon']:
-            print(resultsjson['results'][i]['carbon'])
-            print(resultsjson['results'][i]['timestamp'])
-
-    mix_data = {}
-    return mix_data
+    latest = (next((x for x in resultsjson['results'] if x['carbon']), None))
+    if latest:
+        carbon = latest['carbon']
+        timestamp = latest['timestamp']
+        return parse_mix(carbon, timestamp)
+    else:
+        return "No data found"
 
 
 def text_data(mix_data):
@@ -62,4 +66,4 @@ def text_sorry():
     pass
 
 
-get_mix_data("ISONE")
+print(get_mix_data("ISONE"))

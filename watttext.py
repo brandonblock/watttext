@@ -14,13 +14,12 @@ def parse_mix(carbon, timestamp):
     carbon_rounded = round(carbon, 3)
     day = timestamp[0:10]
     time = timestamp[11:16]
-    text_string = "%sppb/kwh as of %s on %s" % (carbon_rounded, time, day)
-    print(text_string)
-
+    text_string = "%slb/kwh at %s on %s" % (carbon_rounded, time, day)
+    return text_string
 
 def parse_text(text):
     # Parses text into a zip code or rejects.
-    zip = ""
+    zip = 94720
     return zip
 
 
@@ -42,8 +41,11 @@ def loc_to_ba(coords):
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     resultsjson = json.loads(r.text)
-    abbrev = resultsjson[0]['abbrev']
-    return abbrev
+    if resultsjson:
+        abbrev = resultsjson[0]['abbrev']
+        return abbrev
+    else:
+        return False
 
 
 def get_mix_data(ba):
@@ -58,16 +60,20 @@ def get_mix_data(ba):
         timestamp = latest['timestamp']
         return parse_mix(carbon, timestamp)
     else:
-        return "No data found"
+        return False
 
 
-def text_data(mix_data):
+def text_data(mix_string):
     # Texts the mix data out via Twilio
-    pass
+    if mix_string:
+        text_text = mix_string
+    else:
+        text_text = "Sorry, no data found"
+    return text_text
 
 
 def text_sorry():
     pass
 
 
-get_mix_data("ISONE")
+print(text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text(""))))))

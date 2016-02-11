@@ -5,7 +5,7 @@ import json
 
 from geopy.geocoders import Nominatim
 
-watttime_token = 'Token 062fcb6e4c2eac88241e0a727f2cf4fb8c1cca29'
+watttime_token = 'Token '
 headers = {'Authorization': watttime_token}
 
 

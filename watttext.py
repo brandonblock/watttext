@@ -19,7 +19,7 @@ def parse_mix(carbon, timestamp):
 
 def parse_text(text):
     # Parses text into a zip code or rejects.
-    zip = 94720
+    zip = 94704
     return zip
 
 
@@ -70,10 +70,5 @@ def text_data(mix_string):
     else:
         text_text = "Sorry, no data found"
     return text_text
-
-
-def text_sorry():
-    pass
-
 
 print(text_data(get_mix_data(loc_to_ba(zip_lookup(parse_text(""))))))
